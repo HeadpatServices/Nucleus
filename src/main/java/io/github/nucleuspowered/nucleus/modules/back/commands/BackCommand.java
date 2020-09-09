@@ -81,13 +81,13 @@ public class BackCommand extends AbstractCommand<Player> implements Reloadable {
                 throw ReturnMessageException.fromKey(src, "command.back.sameworld");
             }
         }
-
-        ClaimManager claimManager = GriefDefender.getCore().getClaimManager(ol.get().getExtent().getUniqueId());
-        Vector3d vec = loc.getPosition();
-        Claim claim = claimManager.getClaimAt((int) vec.getX(), (int) vec.getY(), (int) vec.getZ());
-        if (claim.isAdminClaim()) {
-            if (!hasPermission(src, EXEMPT_ADMINCLAIM_PERMISSION))
+        if (!hasPermission(src, EXEMPT_ADMINCLAIM_PERMISSION)) {
+            ClaimManager claimManager = GriefDefender.getCore().getClaimManager(ol.get().getExtent().getUniqueId());
+            Vector3d vec = loc.getPosition();
+            Claim claim = claimManager.getClaimAt((int) vec.getX(), (int) vec.getY(), (int) vec.getZ());
+            if (claim.isAdminClaim()) {
                 throw ReturnMessageException.fromKey(src, "command.back.adminclaim");
+            }
         }
 
         NucleusTeleportHandler.TeleportResult result =
