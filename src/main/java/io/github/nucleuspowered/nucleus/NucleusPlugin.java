@@ -121,7 +121,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-@Plugin(id = ID, name = NAME, version = VERSION, description = DESCRIPTION, dependencies = {@Dependency(id = "spongeapi", version = PluginInfo.SPONGE_API_VERSION), @Dependency(id = "griefdefender", version = "1.3.0")})
+@Plugin(id = ID, name = NAME, version = VERSION, description = DESCRIPTION, dependencies = {@Dependency(id = "spongeapi", version = PluginInfo.SPONGE_API_VERSION), @Dependency(id = "griefdefender")})
 public class NucleusPlugin extends Nucleus {
 
     private static final String divider = "+------------------------------------------------------------+";
