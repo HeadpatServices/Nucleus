@@ -30,6 +30,7 @@ public class BackListeners implements Reloadable, ListenerBase {
     public static final String ON_DEATH = "targets.death";
     public static final String ON_PORTAL = "targets.portal";
     public static final String SAME_DIMENSION = "exempt.samedimension";
+    public static final String ADMIN_CLAIM = "exempt.adminclaim";
 
     private final BackHandler handler = Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(BackHandler.class);
     private BackConfig backConfig = new BackConfig();

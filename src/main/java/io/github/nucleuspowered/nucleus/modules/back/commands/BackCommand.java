@@ -4,7 +4,11 @@
  */
 package io.github.nucleuspowered.nucleus.modules.back.commands;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Maps;
+import com.griefdefender.api.GriefDefender;
+import com.griefdefender.api.claim.Claim;
+import com.griefdefender.api.claim.ClaimManager;
 import io.github.nucleuspowered.nucleus.Nucleus;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.Permissions;
 import io.github.nucleuspowered.nucleus.internal.annotations.command.RegisterCommand;
@@ -39,7 +43,8 @@ public class BackCommand extends AbstractCommand<Player> implements Reloadable {
 
     private final BackHandler handler = Nucleus.getNucleus().getInternalServiceManager().getServiceUnchecked(BackHandler.class);
     private boolean sameDimensionCheck = false;
-    private final String EXEMPT_PERMISSION = this.permissions.getPermissionWithSuffix(BackListeners.SAME_DIMENSION);
+    private final String EXEMPT_SAMEDIM_PERMISSION = this.permissions.getPermissionWithSuffix(BackListeners.SAME_DIMENSION);
+    private final String EXEMPT_ADMINCLAIM_PERMISSION = this.permissions.getPermissionWithSuffix(BackListeners.ADMIN_CLAIM);
 
     @Override
     public CommandElement[] getArguments() {
@@ -58,6 +63,7 @@ public class BackCommand extends AbstractCommand<Player> implements Reloadable {
         m.put(BackListeners.ON_TELEPORT, PermissionInformation.getWithTranslation("permission.back.onteleport", SuggestedLevel.USER));
         m.put(BackListeners.ON_PORTAL, PermissionInformation.getWithTranslation("permission.back.onportal", SuggestedLevel.USER));
         m.put(BackListeners.SAME_DIMENSION, PermissionInformation.getWithTranslation("permission.back.exempt.samedimension", SuggestedLevel.MOD));
+        m.put(BackListeners.ADMIN_CLAIM, PermissionInformation.getWithTranslation("permission.back.exempt.adminclaim", SuggestedLevel.MOD));
         m.put("exempt.bordercheck", PermissionInformation.getWithTranslation("permission.tppos.border", SuggestedLevel.ADMIN));
         return m;
     }
@@ -71,9 +77,17 @@ public class BackCommand extends AbstractCommand<Player> implements Reloadable {
 
         Transform<World> loc = ol.get();
         if (this.sameDimensionCheck && src.getWorld().getUniqueId() != loc.getExtent().getUniqueId()) {
-            if (!hasPermission(src, EXEMPT_PERMISSION)) {
+            if (!hasPermission(src, EXEMPT_SAMEDIM_PERMISSION)) {
                 throw ReturnMessageException.fromKey(src, "command.back.sameworld");
             }
+        }
+
+        ClaimManager claimManager = GriefDefender.getCore().getClaimManager(ol.get().getExtent().getUniqueId());
+        Vector3d vec = loc.getPosition();
+        Claim claim = claimManager.getClaimAt((int) vec.getX(), (int) vec.getY(), (int) vec.getZ());
+        if (claim.isAdminClaim()) {
+            if (!hasPermission(src, EXEMPT_ADMINCLAIM_PERMISSION))
+                throw ReturnMessageException.fromKey(src, "command.back.adminclaim");
         }
 
         NucleusTeleportHandler.TeleportResult result =
