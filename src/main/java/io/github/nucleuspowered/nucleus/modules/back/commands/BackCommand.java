@@ -5,6 +5,7 @@
 package io.github.nucleuspowered.nucleus.modules.back.commands;
 
 import com.flowpowered.math.vector.Vector3d;
+import com.flowpowered.math.vector.Vector3i;
 import com.google.common.collect.Maps;
 import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
@@ -84,7 +85,7 @@ public class BackCommand extends AbstractCommand<Player> implements Reloadable {
         if (!hasPermission(src, EXEMPT_ADMINCLAIM_PERMISSION)) {
             ClaimManager claimManager = GriefDefender.getCore().getClaimManager(ol.get().getExtent().getUniqueId());
             Vector3d vec = loc.getPosition();
-            Claim claim = claimManager.getClaimAt((int) vec.getX(), (int) vec.getY(), (int) vec.getZ());
+            Claim claim = claimManager.getClaimAt(new Vector3i(vec.getX(), vec.getY(), vec.getZ()));
             if (claim.isAdminClaim()) {
                 throw ReturnMessageException.fromKey(src, "command.back.adminclaim");
             }
