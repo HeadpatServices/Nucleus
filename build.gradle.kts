@@ -90,6 +90,7 @@ repositories {
     maven("https://repo.spongepowered.org/maven")
     maven("https://repo.drnaylor.co.uk/artifactory/list/minecraft")
     maven("https://repo.drnaylor.co.uk/artifactory/list/quickstart")
+    maven("https://jitpack.io")
 }
 
 dependencies {

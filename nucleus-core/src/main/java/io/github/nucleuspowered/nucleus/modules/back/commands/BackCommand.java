@@ -4,6 +4,10 @@
  */
 package io.github.nucleuspowered.nucleus.modules.back.commands;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.griefdefender.api.GriefDefender;
+import com.griefdefender.api.claim.Claim;
+import com.griefdefender.api.claim.ClaimManager;
 import io.github.nucleuspowered.nucleus.api.teleport.data.TeleportResult;
 import io.github.nucleuspowered.nucleus.api.teleport.data.TeleportScanners;
 import io.github.nucleuspowered.nucleus.modules.back.BackPermissions;
@@ -35,11 +39,11 @@ import java.util.Optional;
         basePermission = BackPermissions.BASE_BACK,
         commandDescriptionKey = "back",
         modifiers = {
-            @CommandModifier(value = CommandModifiers.HAS_WARMUP, exemptPermission = BackPermissions.EXEMPT_WARMUP_BACK),
-            @CommandModifier(value = CommandModifiers.HAS_COOLDOWN, exemptPermission = BackPermissions.EXEMPT_COOLDOWN_BACK),
-            @CommandModifier(value = CommandModifiers.HAS_COST, exemptPermission = BackPermissions.EXEMPT_COST_BACK)
+                @CommandModifier(value = CommandModifiers.HAS_WARMUP, exemptPermission = BackPermissions.EXEMPT_WARMUP_BACK),
+                @CommandModifier(value = CommandModifiers.HAS_COOLDOWN, exemptPermission = BackPermissions.EXEMPT_COOLDOWN_BACK),
+                @CommandModifier(value = CommandModifiers.HAS_COST, exemptPermission = BackPermissions.EXEMPT_COST_BACK)
         },
-        associatedPermissions = { BackPermissions.TPPOS_BORDER, BackPermissions.BACK_EXEMPT_SAMEDIMENSION })
+        associatedPermissions = {BackPermissions.TPPOS_BORDER, BackPermissions.BACK_EXEMPT_SAMEDIMENSION})
 @NonnullByDefault
 public class BackCommand implements ICommandExecutor<Player>, IReloadableService.Reloadable {
 
@@ -47,11 +51,11 @@ public class BackCommand implements ICommandExecutor<Player>, IReloadableService
 
     @Override
     public CommandElement[] parameters(INucleusServiceCollection serviceCollection) {
-        return new CommandElement[] {
+        return new CommandElement[]{
                 GenericArguments.flags()
-                    .permissionFlag(BackPermissions.TPPOS_BORDER,"b", "-border")
-                    .flag("f", "-force")
-                    .buildWith(GenericArguments.none())
+                        .permissionFlag(BackPermissions.TPPOS_BORDER, "b", "-border")
+                        .flag("f", "-force")
+                        .buildWith(GenericArguments.none())
         };
     }
 
@@ -72,15 +76,22 @@ public class BackCommand implements ICommandExecutor<Player>, IReloadableService
             }
         }
 
+        ClaimManager claimManager = GriefDefender.getCore().getClaimManager(ol.get().getExtent().getUniqueId());
+        Vector3d vec = loc.getPosition();
+        Claim claim = claimManager.getClaimAt((int) vec.getX(), (int) vec.getY(), (int) vec.getZ());
+        if (claim.isAdminClaim() && claim.getName().isPresent() && context.testPermission(BackPermissions.BACK_TELEPORT_ADMINCLAIM + "." + claim.getName().get()))
+            return context.errorResult("command.back.adminclaim");
+
+
         INucleusTeleportService service = context.getServiceCollection().teleportService();
         try (INucleusTeleportService.BorderDisableSession ac = service.temporarilyDisableBorder(border, loc.getExtent())) {
             TeleportResult result = service.teleportPlayerSmart(
-                            src,
-                            loc,
-                            false,
-                            !context.hasAny("f"),
-                            TeleportScanners.NO_SCAN.get()
-                    );
+                    src,
+                    loc,
+                    false,
+                    !context.hasAny("f"),
+                    TeleportScanners.NO_SCAN.get()
+            );
             if (result.isSuccessful()) {
                 context.sendMessage("command.back.success");
                 return context.successResult();

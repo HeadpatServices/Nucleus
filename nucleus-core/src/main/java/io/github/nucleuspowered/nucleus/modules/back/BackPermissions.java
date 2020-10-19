@@ -47,4 +47,7 @@ public class BackPermissions {
     @PermissionMetadata(descriptionKey = "permission.back.onteleport", level = SuggestedLevel.USER)
     public static final String BACK_ONTELEPORT = "nucleus.back.targets.teleport";
 
+    @PermissionMetadata(descriptionKey = "permission.back.adminclaims.teleport", level = SuggestedLevel.ADMIN)
+    public static final String BACK_TELEPORT_ADMINCLAIM = "nucleus.back.adminclaims.teleport";
+
 }

@@ -99,7 +99,10 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
-@Plugin(id = NucleusPluginInfo.ID, name = NucleusPluginInfo.NAME, version = NucleusPluginInfo.VERSION, description = NucleusPluginInfo.DESCRIPTION, dependencies = @Dependency(id = "spongeapi", version = NucleusPluginInfo.SPONGE_API_VERSION))
+@Plugin(id = NucleusPluginInfo.ID, name = NucleusPluginInfo.NAME, version = NucleusPluginInfo.VERSION, description = NucleusPluginInfo.DESCRIPTION, dependencies = {
+        @Dependency(id = "spongeapi", version = NucleusPluginInfo.SPONGE_API_VERSION),
+        @Dependency(id = "griefdefender")
+})
 public class NucleusBootstrap {
 
     private static final String DOCGEN_PROPERTY = "nucleus.docgen";

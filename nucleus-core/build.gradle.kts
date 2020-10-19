@@ -13,7 +13,7 @@ repositories {
     maven("https://repo.spongepowered.org/maven")
     maven("https://repo.drnaylor.co.uk/artifactory/list/minecraft")
     maven("https://repo.drnaylor.co.uk/artifactory/list/quickstart")
-    // maven("https://jitpack.io")
+    maven("https://jitpack.io")
 }
 
 sourceSets {
@@ -45,6 +45,9 @@ dependencies {
     implementation(rootProject.properties["neutrinoDep"]?.toString()!!) {
         exclude("org.spongepowered", "configurate-core")
     }
+
+    implementation("com.github.bloodmc:GriefDefenderAPI:33bd795ad4")
+
 
     testCompile("org.mockito:mockito-all:1.10.19")
     testCompile("org.powermock:powermock-module-junit4:1.6.4")
